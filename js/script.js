@@ -7,6 +7,8 @@
 
 $(document).ready(function () {
 
+  // FUNZIONI
+
   // Funzione che aggiunge uno zero se il giorno è minore di 10.
   function addZero(dayValue) {
     if (dayValue < 10) {
@@ -39,12 +41,19 @@ $(document).ready(function () {
     }
   }
 
+  // FINE FUNZIONI
+
+
   // Compilo il template contenente il giorno con handlebars.
   var source = $("#calendar-template").html();
   var template = Handlebars.compile(source);
 
-  // Stabilisco la data di inizio del calendario e la trasformo in un oggetto moment.
-  var dataInizio = moment("2018-01-01");
+  // Stabilisco la data di inizio del calendario e l'indice del mese.
+  var data = "2018-01-01";
+  var meseIndice = 0;
+
+  // Trasformo la data in un oggetto moment.
+  var dataInizio = moment(data);
   console.log(dataInizio);
 
   // Definisco il numero di giorni presenti nel mese scelto.
@@ -58,11 +67,14 @@ $(document).ready(function () {
   // Impostiamo un ciclo per stampare i giorni del mese di gennaio.
   for (var i = 1; i <= giorniMese; i++) {
 
+    // Definisco la variabile giorno.
+    var giornoCorrente = addZero(i);
+
     // Definisco l'oggetto da stampare.
     var context = {
       "giornata": i,
       "mese": meseCorrente,
-      "data": dataInizio.format("YYYY") + "-" + dataInizio.format("MM") + "-" + addZero(i)
+      "data": dataInizio.format("YYYY") + "-" + dataInizio.format("MM") + "-" + giornoCorrente
     };
 
     // Compilo e stampo il giorno.
@@ -70,14 +82,14 @@ $(document).ready(function () {
     $("#days").append(html);
   }
 
-  // Ora effettuo la chiamata all'API per ottenere l'elenco delle festività.
+  // Ora effettuo la chiamata ajax all'API per ottenere l'elenco delle festività.
   $.ajax(
     {
       "url": "https://flynn.boolean.careers/exercises/api/holidays",
       "data":
         {
           "year": 2018,
-          "month": 0
+          "month": meseIndice
         },
       "method": "GET",
       "success": function (data, stato) {
