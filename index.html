@@ -10,6 +10,26 @@
   </head>
   <body>
 
+    <div class="wrapper">
+
+      <header>
+        <h1>Gennaio</h1>
+        <div class="prev">&lt;- Precedente</div>
+        <div class="next">Successivo -&gt;</div>
+      </header>
+
+      <ul id="days">
+
+      </ul>
+
+    </div>
+
+    <!-- Template calendario -->
+    <script id="calendar-template" type="text/x-handlebars-template">
+      <li class="day">{{giornata}} {{mese}}</li>
+    </script>
+    <!-- /Template calendario -->
+
     <script src="https://momentjs.com/downloads/moment.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js" charset="utf-8"></script>
     <script src="js/script.js" charset="utf-8"></script>

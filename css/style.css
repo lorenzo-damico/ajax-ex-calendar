@@ -3,3 +3,28 @@
   margin: 0;
   padding: 0;
 }
+
+.wrapper {
+  width: 500px;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+}
+
+.prev, .next {
+  display: inline-block;
+  margin: 10px 10px;
+}
+
+#days {
+  list-style: none;
+  width: 250px;
+  margin: 0 auto;
+}
+
+.holiday {
+  color: red;
+  font-weight: bold;
+}
