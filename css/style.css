@@ -7,9 +7,6 @@
 .wrapper {
   width: 500px;
   margin: 0 auto;
-}
-
-header {
   text-align: center;
 }
 
@@ -19,9 +16,10 @@ header {
 }
 
 #days {
+  display: inline-block;
   list-style: none;
-  width: 250px;
-  margin: 0 auto;
+  margin-top: 10px;
+  text-align: left;
 }
 
 .holiday {
