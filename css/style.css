@@ -13,6 +13,7 @@
 .prev, .next {
   display: inline-block;
   margin: 10px 10px;
+  cursor: pointer;
 }
 
 #days {

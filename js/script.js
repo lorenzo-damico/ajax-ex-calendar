@@ -109,6 +109,58 @@ $(document).ready(function () {
   printHolidays(dataMoment);
 
 
+  //EVENTI
+
+  // 1. Cliccando su successivo, voglio passare al prossimo mese.
+  $("header .next").click(
+    function () {
+
+      // Eseguo un controllo sul mese di dicembre per impedire di andare oltre.
+      if (dataMoment.format("M") == "12") {
+        alert("Impossibile visualizzare il mese successivo!");
+
+      // Altrimenti, visualizzo il mese successivo.
+      } else {
+
+        // Aggiungo un mese alla data.
+        dataMoment.add(1, "months");
+
+        // Rimuovo il mese visualizzato.
+        $("#days li.day").remove();
+
+        // Stampo il nuovo mese usando la funzione.
+        printCalendar(dataMoment);
+
+        // Importo con la chiamata ajax e stampo nel calendario le festività usando la funzione.
+        printHolidays(dataMoment);
+      }
+  });
+
+  // 2. Cliccando su precedente, voglio tornare al precedente mese.
+  $("header .prev").click(
+    function () {
+
+      // Eseguo un controllo sul mese di gennaio per impedire di andare prima.
+      if (dataMoment.format("M") == "1") {
+        alert("Impossibile visualizzare il mese precedente!");
+
+      // Altrimenti, visualizzo il mese precedente.
+      } else {
+
+        // Aggiungo un mese alla data.
+        dataMoment.subtract(1, "months");
+
+        // Rimuovo il mese visualizzato.
+        $("#days li.day").remove();
+
+        // Stampo il nuovo mese usando la funzione.
+        printCalendar(dataMoment);
+
+        // Importo con la chiamata ajax e stampo nel calendario le festività usando la funzione.
+        printHolidays(dataMoment);
+      }
+  });
+
 
 
 });
