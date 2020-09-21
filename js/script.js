@@ -5,107 +5,108 @@
 // Creiamo il mese di Gennaio, e con la chiamata all'API inseriamo le festività.
 // API: https://flynn.boolean.careers/exercises/api/holidays?year=2018&month=0
 
+// Milestone 2
+// Diamo la possibilità di cambiare mese, gestendo il caso in cui l’API non possa ritornare festività.
+
 $(document).ready(function () {
 
   // FUNZIONI
 
-  // Funzione che aggiunge uno zero se il giorno è minore di 10.
-  function addZero(dayValue) {
-    if (dayValue < 10) {
-      return "0" + dayValue
+  // 1. Funzione che stampa l'intero mese.
+  function printCalendar(dataMoment) {
+
+    // Compilo il template contenente il giorno con handlebars.
+    var source = $("#calendar-template").html();
+    var template = Handlebars.compile(source);
+
+    // Definisco il numero di giorni presenti nel mese scelto.
+    var giorniMese = dataMoment.daysInMonth();
+
+    // Creiamo un clone della dataMoment.
+    var dataMomentClone = dataMoment.clone();
+
+    // Stampo il nome del mese e l'anno.
+    $("header h1").text(dataMoment.format("MMMM YYYY"));
+
+    // Impostiamo un ciclo per stampare i giorni del mese.
+    for (var i = 1; i <= giorniMese; i++) {
+
+      // Definisco l'oggetto da stampare.
+      var context = {
+        "giornata": dataMomentClone.format("D"),
+        "mese": dataMomentClone.format("MMMM"),
+        "dataCompleta": dataMomentClone.format("YYYY-MM-DD")
+      };
+
+      // Compilo e stampo il giorno.
+      var html = template(context);
+      $("#days").append(html);
+
+      // Alla fine del ciclo, incremento la data di un giorno operando sul clone.
+      dataMomentClone.add(1, "days");
     }
-    return dayValue;
   }
 
-  // Funzione che esegue l'attribuzione della festività.
-  function ifHolidays(arrayFeste) {
+  // 2. Funzione che esegue l'attribuzione della festività.
+  function printHolidays(dataMoment) {
 
-    // Eseguo un ciclo dell'array.
-    for (var i = 0; i < arrayFeste.length; i++) {
+    // Trovo l'indice del mese corrente.
+    var meseIndice = dataMoment.format("M") - 1;
 
-      // Salvo in una variabile la festività.
-      var festa = arrayFeste[i];
+    // Ora effettuo la chiamata ajax all'API per ottenere l'elenco delle festività.
+    $.ajax(
+      {
+        "url": "https://flynn.boolean.careers/exercises/api/holidays",
+        "data":
+          {
+            "year": 2018,
+            "month": meseIndice
+          },
+        "method": "GET",
+        "success": function (data) {
 
-      // Seleziono il nome della festa e la data estrapolando le proprietà.
-      var nomeFesta = festa.name;
-      var dataFesta = festa.date;
-      console.log(nomeFesta);
-      console.log(dataFesta);
+          // Salvo in una variabile l'array che mi giunge dall'API.
+          var listaFeste = data.response;
 
-      // Seleziono i giorni con il data-date uguale alla data e li evidenzio aggiungendo la classe holiday.
-      $("[data-date='"+ dataFesta +"']").addClass("holiday");
+          // Eseguo un ciclo dell'array.
+          for (var i = 0; i < listaFeste.length; i++) {
 
-      // Scrivo anche il nome della festività.
-      $("[data-date='"+ dataFesta +"']").append(" - " + nomeFesta);
+            // Salvo in una variabile la festività.
+            var festa = listaFeste[i];
 
-    }
+            // Seleziono il nome della festa e la data estrapolando le proprietà.
+            var nomeFesta = festa.name;
+            var dataFesta = festa.date;
+
+            // Seleziono i giorni con il data-date uguale alla data e li evidenzio aggiungendo la classe holiday.
+            $(".day[data-date='"+ dataFesta +"']").addClass("holiday");
+
+            // Scrivo anche il nome della festività.
+            $(".day[data-date='"+ dataFesta +"'] .holiday-type").text("- " + nomeFesta);
+          }
+        },
+        "error": function () {
+          alert("Errore!");
+        }
+      }
+    );
   }
 
   // FINE FUNZIONI
 
 
-  // Compilo il template contenente il giorno con handlebars.
-  var source = $("#calendar-template").html();
-  var template = Handlebars.compile(source);
 
-  // Stabilisco la data di inizio del calendario e l'indice del mese.
+  // Stabilisco la data di inizio del calendario.
   var data = "2018-01-01";
-  var meseIndice = 0;
 
   // Trasformo la data in un oggetto moment.
-  var dataInizio = moment(data);
-  console.log(dataInizio);
+  var dataMoment = moment(data);
 
-  // Definisco il numero di giorni presenti nel mese scelto.
-  var giorniMese = dataInizio.daysInMonth();
-  console.log(giorniMese);
+  // Stampo il mese usando la funzione.
+  printCalendar(dataMoment);
 
-  // Definisco il mese in cui mi trovo.
-  var meseCorrente = dataInizio.format("MMMM");
-  console.log(meseCorrente);
-
-  // Impostiamo un ciclo per stampare i giorni del mese di gennaio.
-  for (var i = 1; i <= giorniMese; i++) {
-
-    // Definisco la variabile giorno.
-    var giornoCorrente = addZero(i);
-
-    // Definisco l'oggetto da stampare.
-    var context = {
-      "giornata": i,
-      "mese": meseCorrente,
-      "data": dataInizio.format("YYYY") + "-" + dataInizio.format("MM") + "-" + giornoCorrente
-    };
-
-    // Compilo e stampo il giorno.
-    var html = template(context);
-    $("#days").append(html);
-  }
-
-  // Ora effettuo la chiamata ajax all'API per ottenere l'elenco delle festività.
-  $.ajax(
-    {
-      "url": "https://flynn.boolean.careers/exercises/api/holidays",
-      "data":
-        {
-          "year": 2018,
-          "month": meseIndice
-        },
-      "method": "GET",
-      "success": function (data, stato) {
-
-        // Salvo in una variabile l'array che mi giunge dall'API.
-        var listaFeste = data.response;
-        console.log(listaFeste);
-
-        // Eseguo la funzione isHolidays.
-        ifHolidays(listaFeste);
-      },
-      "error": function (richiesta, stato, errore) {
-        console.log(stato);
-      }
-    }
-  );
+  // Importo con la chiamata ajax e stampo nel calendario le festività usando la funzione.
+  printHolidays(dataMoment);
 
 
 
